@@ -1,0 +1,7 @@
+#!/bin/bash
+# mav: MAVProxy'yi SLAM projesinin calisma klasorunde acar (mav.tlog vb. oraya yazilir, home kirlenmez)
+PROJE=${SLAM_PROJE:-$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")}
+[ -d "$PROJE/otonom" ] || { echo "HATA: proje klasoru bulunamadi ($PROJE). bin/ scriptlerini 'ln -s' ile bagla ya da SLAM_PROJE=<klasor> ver"; exit 1; }
+mkdir -p "$PROJE/calisma"
+cd "$PROJE/calisma" || exit 1
+exec mavproxy.py --master=udp:127.0.0.1:14550 "$@"

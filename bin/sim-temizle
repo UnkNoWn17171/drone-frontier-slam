@@ -1,0 +1,16 @@
+#!/bin/bash
+# sim-temizle: simulasyonla ilgili butun surecleri kapatir
+source /opt/ros/jazzy/setup.bash
+# desenler surec adlarina gore, komut satirinda sadece kelime gecen baska programlar (editor vb.) kapanmasin
+P='ros2 launch|gz sim|(^|[/ ])arducopter( |$)|mavproxy\.py|micro_ros_agent|parameter_bridge|robot_state_publisher|topic_tools|ros_gz_sim/create|(^|[/ ])rviz2( |$)|cartographer_node|cartographer_occupancy_grid_node|python3? [^ ]*(kesif|engel_kopru|kol_ucus)\.py'
+# 1) once SIGTERM, surecler SHM kilitlerini birakabilsin
+pkill -f "$P"; sleep 3
+# 2) kapanmayanlari zorla kapat
+pkill -9 -f "$P"; sleep 1
+# 3) sahipsiz SHM dosyalari
+fastdds shm clean
+# 4) ROS'un eski dugum listesi
+ros2 daemon stop
+# 5) kontrol
+pgrep -af "$P" || echo TERTEMIZ
+echo "shm dosyasi: $(find /dev/shm -maxdepth 1 -iname '*fastrtps*' | wc -l)"

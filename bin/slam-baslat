@@ -1,0 +1,96 @@
+#!/bin/bash
+# slam-baslat [durust|normal] [ev|kafe]
+#   1. arguman: durust = odometrisiz SLAM (varsayilan), normal = hazir demo ayari
+#   2. arguman: ev = ev_sim/ev.sdf, kafe = ev_sim/kafe.sdf
+# Ornek: slam-baslat durust ev      MAVProxy: mav      Kapatmak: sim-temizle
+
+# Proje klasoru bu scriptin yerinden bulunur (~/bin'e ln -s ile baglanmis
+# olmali). Kopyalanmissa SLAM_PROJE=<klasor> ile ver.
+PROJE=${SLAM_PROJE:-$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")}
+[ -d "$PROJE/otonom" ] || { echo "HATA: proje klasoru bulunamadi ($PROJE). bin/ scriptlerini kopyalama, 'ln -s' ile bagla ya da SLAM_PROJE=<klasor> ver"; exit 1; }
+CALISMA=$PROJE/calisma               # sim burada kosar: eeprom.bin, logs, terrain, mav.*
+CFG_DIR=$PROJE/carto_cfg
+RVIZ=$HOME/ros2_ws/install/ardupilot_cartographer/share/ardupilot_cartographer/rviz/cartographer.rviz
+MOD=${1:-durust}
+DUNYA=${2:-ev}
+
+export PYTHONUNBUFFERED=1            # ciktilar log dosyasina aninda yazilsin
+if command -v warp-cli >/dev/null; then
+  warp-cli disconnect >/dev/null 2>&1  # WARP (varsa) sim sirasinda kapali olmali
+fi
+"$PROJE/bin/sim-temizle" >/dev/null  # eski kalintilari temizle
+source ~/ros2_ws/install/setup.bash
+mkdir -p "$CALISMA"
+cd "$CALISMA" || { echo "HATA: $CALISMA yok"; exit 1; }
+
+bekle() {                            # kullanim: bekle "<satir>" <dosya> <saniye>
+  for _ in $(seq "$3"); do
+    grep -q "$1" "$2" && return 0
+    sleep 1
+  done
+  echo "ZAMAN ASIMI: '$1' gelmedi. $2 dosyasina bak, sonra sim-temizle"
+  exit 1
+}
+
+# ArduPilot DDS'i DDS_DOMAIN_ID'deki domain'de yayinlar. ROS tarafi (relay,
+# Cartographer, kesif.py) ayni domain'de degilse EKF SLAM konumunu hic almaz.
+DOMAIN=$(awk '$1=="DDS_DOMAIN_ID"{print $2}' "$PROJE/param_taban.parm")
+if [ -n "$DOMAIN" ] && [ "${ROS_DOMAIN_ID:-0}" != "$DOMAIN" ]; then
+  echo "UYARI: ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}, ama param_taban.parm'da DDS_DOMAIN_ID=$DOMAIN."
+  echo "       ~/.bashrc'ye 'export ROS_DOMAIN_ID=$DOMAIN' ekle, yeni terminal ac."
+fi
+
+# eeprom.bin yoksa ArduPilot fabrika ayariyla acilir (DDS_DOMAIN_ID=0) ve hata vermez.
+# GPS ayarlari fabrika acilisinda da gpssiz.parm'dan geliyor
+ILK_KURULUM=0
+[ -f "$CALISMA/eeprom.bin" ] || ILK_KURULUM=1
+if [ "$MOD" = durust ] && [ ! -f "$CFG_DIR/cartographer_durust.lua" ]; then echo "HATA: $CFG_DIR/cartographer_durust.lua yok"; exit 1; fi
+if [ "$MOD" != durust ] && [ "$MOD" != normal ]; then echo "HATA: mod '$MOD' tanimsiz -> durust ya da normal yaz"; exit 1; fi
+if [ "$DUNYA" = ev ] || [ "$DUNYA" = kafe ]; then
+  SIM_LAUNCH="$PROJE/ev_sim/$DUNYA.launch.py"
+  [ -f "$SIM_LAUNCH" ] || { echo "HATA: $SIM_LAUNCH yok"; exit 1; }
+else
+  echo "HATA: dunya '$DUNYA' tanimsiz -> ev ya da kafe yaz"; exit 1
+fi
+[ -f "$PROJE/gpssiz.parm" ] || { echo "HATA: $PROJE/gpssiz.parm yok"; exit 1; }
+echo "MOD: $MOD   DUNYA: $DUNYA   PROJE: $PROJE"
+
+# launch'in kendi varsayilan dosyalari + gpssiz.parm
+SITL_PARM=$(ros2 pkg prefix ardupilot_sitl)/share/ardupilot_sitl/config/default_params
+VARSAYILAN=$SITL_PARM/copter.parm,$SITL_PARM/gazebo-iris.parm,$SITL_PARM/dds_udp.parm,$SITL_PARM/dds_use_ns.parm,$PROJE/gpssiz.parm
+
+echo "1/3 sim aciliyor..."
+setsid -f ros2 launch "$SIM_LAUNCH" lidar_dim:=2 use_gz_sim_gui:=false rviz:=false use_gz_tf:=false defaults:="$VARSAYILAN" > /tmp/sim.log 2>&1
+bekle "DDS: Initialization passed" /tmp/sim.log 120
+
+if [ "$ILK_KURULUM" = 1 ]; then
+  echo "ILK KURULUM: $CALISMA/eeprom.bin yok, parametreler fabrika ayarinda."
+  echo "  1) baska terminalde: mav"
+  echo "  2) MAVProxy'de:      param load ../param_taban.parm"
+  echo "  3) sonra:            slam-baslat $MOD $DUNYA   (yeniden)"
+  exit 0
+fi
+
+echo "2/3 SLAM + relay aciliyor..."
+if [ "$MOD" = durust ]; then
+  setsid -f ros2 run cartographer_ros cartographer_node -configuration_directory "$CFG_DIR" -configuration_basename cartographer_durust.lua --ros-args -p use_sim_time:=true > /tmp/carto.log 2>&1
+  setsid -f ros2 run cartographer_ros cartographer_occupancy_grid_node --ros-args -p use_sim_time:=true -p resolution:=0.05 > /tmp/grid.log 2>&1
+  setsid -f env SDF_PATH="$GZ_SIM_RESOURCE_PATH" rviz2 -d "$RVIZ" > /tmp/rviz.log 2>&1
+else
+  setsid -f ros2 launch ardupilot_cartographer cartographer.launch.py > /tmp/carto.log 2>&1
+fi
+setsid -f ros2 run topic_tools relay /tf /ap/v1/tf > /tmp/relay.log 2>&1
+
+echo "3/3 EKF'in SLAM'e gecmesi bekleniyor..."
+bekle "is using external nav data" /tmp/sim.log 60
+
+# GPS kapali mi? Eski bir eeprom.bin gpssiz.parm'i ezip GPS'i acmis olabilir
+GPS=$(timeout 30 ros2 service call /ap/v1/get_parameters rcl_interfaces/srv/GetParameters \
+  "{names: [GPS1_TYPE, GPS2_TYPE, SIM_GPS1_ENABLE, AHRS_GPS_USE]}" | grep -o 'integer_value=[0-9-]*' | cut -d= -f2 | xargs)
+if [ "$GPS" != "0 0 0 0" ]; then
+  echo "HATA: GPS kapali degil. GPS1_TYPE GPS2_TYPE SIM_GPS1_ENABLE AHRS_GPS_USE = '${GPS:-okunamadi}', hepsi 0 olmali."
+  echo "      mav ile 'param load ../param_taban.parm' yap ya da calisma/eeprom.bin'i silip ilk kurulumu tekrarla, sonra sim-temizle"
+  exit 1
+fi
+echo "GPS kapali (GPS1_TYPE, GPS2_TYPE, SIM_GPS1_ENABLE, AHRS_GPS_USE = 0)"
+echo "HAZIR ($MOD, $DUNYA) -> baska sekmede: mav   |   kapatmak: sim-temizle"

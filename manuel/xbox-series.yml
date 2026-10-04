@@ -1,0 +1,21 @@
+description: >
+  Xbox Series X/S kumandasi, Mode 2 dizilimi.
+  Sol cubuk: dikey=gaz, yatay=burun cevirme.
+  Sag cubuk: dikey=ileri/geri, yatay=saga/sola yatma.
+match:
+  - 'Xbox Series*'
+  - 'Xbox Wireless Controller*'
+controls:
+  - channel: 1      # roll - saga/sola yatma
+    type: axis
+    id: 3
+  - channel: 2      # pitch - ileri/geri (cubuk ileri = burun asagi = ileri ucus)
+    type: axis
+    id: 4
+  - channel: 3      # throttle - gaz (cubuk yukari = yukselme)
+    type: axis
+    id: 1
+    invert: true
+  - channel: 4      # yaw - burun cevirme
+    type: axis
+    id: 0

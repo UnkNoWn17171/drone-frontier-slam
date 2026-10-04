@@ -1,0 +1,172 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="kafe">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"></plugin>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"></plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"></plugin>
+    <plugin filename="gz-sim-air-pressure-system" name="gz::sim::systems::AirPressure"></plugin>
+    <plugin filename="gz-sim-air-speed-system" name="gz::sim::systems::AirSpeed"></plugin>
+    <plugin filename="gz-sim-altimeter-system" name="gz::sim::systems::Altimeter"></plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"></plugin>
+    <plugin filename="gz-sim-magnetometer-system" name="gz::sim::systems::Magnetometer"></plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <spherical_coordinates>
+      <latitude_deg>-35.3632621</latitude_deg>
+      <longitude_deg>149.1652374</longitude_deg>
+      <elevation>10.0</elevation>
+      <heading_deg>0</heading_deg>
+      <surface_model>EARTH_WGS84</surface_model>
+    </spherical_coordinates>
+
+    <model name="kafe">
+      <static>true</static>
+
+      <link name="dis_guney">
+        <pose>4 -5 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>14.15 0.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>14.15 0.15 2.5</size></box></geometry></visual>
+      </link>
+      <link name="dis_kuzey">
+        <pose>4 5 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>14.15 0.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>14.15 0.15 2.5</size></box></geometry></visual>
+      </link>
+      <link name="dis_bati">
+        <pose>-3 0 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.15 10.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.15 10.15 2.5</size></box></geometry></visual>
+      </link>
+      <link name="dis_dogu">
+        <pose>11 0 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.15 10.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.15 10.15 2.5</size></box></geometry></visual>
+      </link>
+
+      <link name="egik_duvar_kuzey">
+        <pose>2.5 3.0 1.25 0 0 0.6109</pose>
+        <collision name="c"><geometry><box><size>4.0 0.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>4.0 0.15 2.5</size></box></geometry></visual>
+      </link>
+      <link name="egik_duvar_guney">
+        <pose>2.5 -3.2 1.25 0 0 -0.6109</pose>
+        <collision name="c"><geometry><box><size>3.5 0.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>3.5 0.15 2.5</size></box></geometry></visual>
+      </link>
+
+      <link name="bolme_kuzey">
+        <pose>5 3.0 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.15 4.0 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.15 4.0 2.5</size></box></geometry></visual>
+      </link>
+      <link name="bolme_guney">
+        <pose>5 -3.0 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.15 4.0 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.15 4.0 2.5</size></box></geometry></visual>
+      </link>
+
+      <link name="koridor_kuzey">
+        <pose>7 1.0 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>4.0 0.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>4.0 0.15 2.5</size></box></geometry></visual>
+      </link>
+      <link name="koridor_guney">
+        <pose>7 -1.0 1.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>4.0 0.15 2.5</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>4.0 0.15 2.5</size></box></geometry></visual>
+      </link>
+
+      <link name="sutun_kuzey">
+        <pose>0 2.5 1.25 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.25</radius><length>2.5</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.25</radius><length>2.5</length></cylinder></geometry></visual>
+      </link>
+      <link name="sutun_guney">
+        <pose>0 -2.5 1.25 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.25</radius><length>2.5</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.25</radius><length>2.5</length></cylinder></geometry></visual>
+      </link>
+
+      <link name="masa_1">
+        <pose>-1.5 1.5 0.375 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.60</radius><length>0.75</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.60</radius><length>0.75</length></cylinder></geometry></visual>
+      </link>
+      <link name="masa_2">
+        <pose>-1.5 -1.5 0.375 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.60</radius><length>0.75</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.60</radius><length>0.75</length></cylinder></geometry></visual>
+      </link>
+      <link name="masa_3">
+        <pose>3.5 0.0 0.375 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.60</radius><length>0.75</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.60</radius><length>0.75</length></cylinder></geometry></visual>
+      </link>
+
+      <link name="bar_tezgah">
+        <pose>-2.0 3.5 0.6 0 0 0</pose>
+        <collision name="c"><geometry><box><size>3.0 0.6 1.2</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>3.0 0.6 1.2</size></box></geometry></visual>
+      </link>
+      <link name="vitrin">
+        <pose>-2.2 -3.5 1.0 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.0 0.5 2.0</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.0 0.5 2.0</size></box></geometry></visual>
+      </link>
+      <link name="depo_raf">
+        <pose>10.0 3.0 1.0 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.5 0.6 2.0</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.5 0.6 2.0</size></box></geometry></visual>
+      </link>
+      <link name="depo_dolap">
+        <pose>10.0 -3.0 1.0 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.5 0.6 2.0</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.5 0.6 2.0</size></box></geometry></visual>
+      </link>
+
+    </model>
+
+    <model name="floor">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

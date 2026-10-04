@@ -1,0 +1,247 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="ev">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-air-pressure-system"
+      name="gz::sim::systems::AirPressure">
+    </plugin>
+    <plugin filename="gz-sim-air-speed-system"
+      name="gz::sim::systems::AirSpeed">
+    </plugin>
+    <plugin filename="gz-sim-altimeter-system"
+      name="gz::sim::systems::Altimeter">
+    </plugin>
+    <plugin filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+    <plugin filename="gz-sim-magnetometer-system"
+      name="gz::sim::systems::Magnetometer">
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <spherical_coordinates>
+      <latitude_deg>-35.3632621</latitude_deg>
+      <longitude_deg>149.1652374</longitude_deg>
+      <elevation>10.0</elevation>
+      <heading_deg>0</heading_deg>
+      <surface_model>EARTH_WGS84</surface_model>
+    </spherical_coordinates>
+
+    <model name="ev">
+      <static>true</static>
+      <link name="dis_guney">
+        <pose>2 -4 1.25 0 0 0</pose>
+        <collision name="dis_guney_c">
+          <geometry><box><size>10.15 0.15 2.5</size></box></geometry>
+        </collision>
+        <visual name="dis_guney_v">
+          <geometry><box><size>10.15 0.15 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="dis_kuzey">
+        <pose>2 4 1.25 0 0 0</pose>
+        <collision name="dis_kuzey_c">
+          <geometry><box><size>10.15 0.15 2.5</size></box></geometry>
+        </collision>
+        <visual name="dis_kuzey_v">
+          <geometry><box><size>10.15 0.15 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="dis_bati">
+        <pose>-3 0 1.25 0 0 0</pose>
+        <collision name="dis_bati_c">
+          <geometry><box><size>0.15 8.15 2.5</size></box></geometry>
+        </collision>
+        <visual name="dis_bati_v">
+          <geometry><box><size>0.15 8.15 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="dis_dogu">
+        <pose>7 0 1.25 0 0 0</pose>
+        <collision name="dis_dogu_c">
+          <geometry><box><size>0.15 8.15 2.5</size></box></geometry>
+        </collision>
+        <visual name="dis_dogu_v">
+          <geometry><box><size>0.15 8.15 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="salon_mutfak_a">
+        <pose>2 -2.3 1.25 0 0 0</pose>
+        <collision name="salon_mutfak_a_c">
+          <geometry><box><size>0.15 3.4 2.5</size></box></geometry>
+        </collision>
+        <visual name="salon_mutfak_a_v">
+          <geometry><box><size>0.15 3.4 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="salon_mutfak_b">
+        <pose>2 2.3 1.25 0 0 0</pose>
+        <collision name="salon_mutfak_b_c">
+          <geometry><box><size>0.15 3.4 2.5</size></box></geometry>
+        </collision>
+        <visual name="salon_mutfak_b_v">
+          <geometry><box><size>0.15 3.4 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="mutfak_yatak_a">
+        <pose>3.2 1 1.25 0 0 0</pose>
+        <collision name="mutfak_yatak_a_c">
+          <geometry><box><size>2.4 0.15 2.5</size></box></geometry>
+        </collision>
+        <visual name="mutfak_yatak_a_v">
+          <geometry><box><size>2.4 0.15 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="mutfak_yatak_b">
+        <pose>6.3 1 1.25 0 0 0</pose>
+        <collision name="mutfak_yatak_b_c">
+          <geometry><box><size>1.4 0.15 2.5</size></box></geometry>
+        </collision>
+        <visual name="mutfak_yatak_b_v">
+          <geometry><box><size>1.4 0.15 2.5</size></box></geometry>
+          <material><diffuse>0.75 0.75 0.72 1</diffuse><ambient>0.75 0.75 0.72 1</ambient></material>
+        </visual>
+      </link>
+      <link name="salon_dolap">
+        <pose>-2.4 3.55 1 0 0 0</pose>
+        <collision name="salon_dolap_c">
+          <geometry><box><size>1 0.6 2</size></box></geometry>
+        </collision>
+        <visual name="salon_dolap_v">
+          <geometry><box><size>1 0.6 2</size></box></geometry>
+          <material><diffuse>0.55 0.35 0.2 1</diffuse><ambient>0.55 0.35 0.2 1</ambient></material>
+        </visual>
+      </link>
+      <link name="salon_kitaplik">
+        <pose>-2.7 -2 0.9 0 0 0</pose>
+        <collision name="salon_kitaplik_c">
+          <geometry><box><size>0.4 1.2 1.8</size></box></geometry>
+        </collision>
+        <visual name="salon_kitaplik_v">
+          <geometry><box><size>0.4 1.2 1.8</size></box></geometry>
+          <material><diffuse>0.55 0.35 0.2 1</diffuse><ambient>0.55 0.35 0.2 1</ambient></material>
+        </visual>
+      </link>
+      <link name="salon_kanepe">
+        <pose>-1.2 -3.4 0.4 0 0 0</pose>
+        <collision name="salon_kanepe_c">
+          <geometry><box><size>2 0.8 0.8</size></box></geometry>
+        </collision>
+        <visual name="salon_kanepe_v">
+          <geometry><box><size>2 0.8 0.8</size></box></geometry>
+          <material><diffuse>0.2 0.3 0.6 1</diffuse><ambient>0.2 0.3 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="mutfak_buzdolabi">
+        <pose>6.5 -3.5 0.95 0 0 0</pose>
+        <collision name="mutfak_buzdolabi_c">
+          <geometry><box><size>0.7 0.7 1.9</size></box></geometry>
+        </collision>
+        <visual name="mutfak_buzdolabi_v">
+          <geometry><box><size>0.7 0.7 1.9</size></box></geometry>
+          <material><diffuse>0.9 0.9 0.9 1</diffuse><ambient>0.9 0.9 0.9 1</ambient></material>
+        </visual>
+      </link>
+      <link name="yatak_gardirop">
+        <pose>3 3.55 1 0 0 0</pose>
+        <collision name="yatak_gardirop_c">
+          <geometry><box><size>1.2 0.6 2</size></box></geometry>
+        </collision>
+        <visual name="yatak_gardirop_v">
+          <geometry><box><size>1.2 0.6 2</size></box></geometry>
+          <material><diffuse>0.55 0.35 0.2 1</diffuse><ambient>0.55 0.35 0.2 1</ambient></material>
+        </visual>
+      </link>
+      <link name="tavan">
+        <pose>2 0 2.55 0 0 0</pose>
+        <collision name="tavan_c">
+          <geometry><box><size>10.15 8.15 0.1</size></box></geometry>
+        </collision>
+        <visual name="tavan_v">
+          <cast_shadows>false</cast_shadows>
+          <geometry><box><size>10.15 8.15 0.1</size></box></geometry>
+          <material><diffuse>0.9 0.9 0.9 1</diffuse><ambient>0.9 0.9 0.9 1</ambient></material>
+          <transparency>0.85</transparency>
+        </visual>
+      </link>
+    </model>
+
+    <model name="floor">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

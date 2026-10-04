@@ -1,0 +1,4 @@
+#!/bin/bash
+# goz: calisan simulasyonun Gazebo penceresini acar (30-60 sn surebilir, Ctrl+C ile kapatma)
+source ~/ros2_ws/install/setup.bash
+exec ros2 launch ros_gz_sim gz_sim.launch.py gz_args:=-g

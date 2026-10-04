@@ -1,0 +1,15 @@
+# slam-baslat bunu ArduPilot'a her acilista varsayilan olarak verir.
+# eeprom.bin bos olsa da drone GPS'siz acilir. Degerler param_taban.parm ile ayni.
+GPS1_TYPE        0
+GPS2_TYPE        0
+SIM_GPS1_ENABLE  0
+AHRS_EKF_TYPE    3
+AHRS_GPS_USE     0
+AHRS_OPTIONS     16
+AHRS_ORIGIN_LAT  -35.363262
+AHRS_ORIGIN_LON  149.165237
+AHRS_ORIGIN_ALT  584
+EK3_SRC1_POSXY   6
+EK3_SRC1_VELXY   6
+EK3_SRC1_VELZ    6
+EK3_SRC1_YAW     6
